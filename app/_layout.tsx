@@ -1,29 +1,27 @@
-import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native';
-import { useFonts } from 'expo-font';
+import { CheckProvider } from '@/contexts/CheckContext';
+import { LanguageProvider } from '../contexts/LanguageContext';
 import { Stack } from 'expo-router';
-import { StatusBar } from 'expo-status-bar';
-import 'react-native-reanimated';
-
-import { useColorScheme } from '@/hooks/useColorScheme';
+import { RadioProvider } from '@/contexts/RadioContext';
 
 export default function RootLayout() {
-  const colorScheme = useColorScheme();
-  const [loaded] = useFonts({
-    SpaceMono: require('../assets/fonts/SpaceMono-Regular.ttf'),
-  });
-
-  if (!loaded) {
-    // Async font loading only occurs in development.
-    return null;
-  }
-
-  return (
-    <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
-      <Stack>
-        <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-        <Stack.Screen name="+not-found" />
-      </Stack>
-      <StatusBar style="auto" />
-    </ThemeProvider>
-  );
+    return (
+        <CheckProvider>
+            <RadioProvider>
+                <LanguageProvider>
+                    <Stack>
+                        <Stack.Screen name="index" options={{ headerShown: false }} />
+                        <Stack.Screen name="screens/LanguageScreen" options={{ headerShown: false }} />
+                        <Stack.Screen name="screens/RegisterScreen" options={{ headerShown: false }} />
+                        <Stack.Screen name="screens/LoginScreen" options={{ headerShown: false }} />
+                        <Stack.Screen name="screens/SelectScreen" options={{ headerShown: false }} />
+                        <Stack.Screen name="screens/QuestionScreen" options={{ headerShown: false }} />
+                        <Stack.Screen name="screens/CheckScreen" options={{ headerShown: false }} />
+                        <Stack.Screen name="screens/RATScreen" options={{ headerShown: false }} />
+                        <Stack.Screen name="screens/AUTScreen" options={{ headerShown: false }} />
+                        <Stack.Screen name="screens/InsightScreen" options={{ headerShown: false }} />
+                    </Stack>
+                </LanguageProvider>
+            </RadioProvider>
+        </CheckProvider>
+    );
 }
