@@ -120,6 +120,19 @@ const RATScreen: React.FC = () => {
         )
     }
 
+    if (timeUp && dataSent) {
+        return (
+            <View>
+                <Text style={styles.title}>
+                    {language === 'ja' ? "回答が送信されました！" : "Your answer has been submitted!"}
+                </Text>
+                <Text style={styles.title}>
+                    {language === 'ja' ? "アプリを終了してください" : "Exit the app"}
+                </Text>
+            </View>
+        )
+    }
+
     return (
         <SafeAreaView style={styles.container}>
             {count < 5 ? (

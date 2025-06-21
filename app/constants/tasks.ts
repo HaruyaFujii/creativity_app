@@ -38,7 +38,7 @@ export const tasks: Tasks[] = [
             { id: 'r19', text_ja: '「民」、「家」、「飼」をそれぞれつなぐ漢字を、ただ1つ見つけなさい。', text_en: 'Find a word that connects "light", "bulb", and "electricity".', used: false },
             { id: 'r20', text_ja: '「労」、「火」、「願」をそれぞれつなぐ漢字を、ただ1つ見つけなさい。', text_en: 'Find a word that connects "light", "bulb", and "electricity".', used: false },
         ],
-        timeLimit: 60 // 1 minutes per 1 problem
+        timeLimit: 300 // 1 minutes per 1 problem
     },
     {
         id: 'insightTask',
