@@ -101,7 +101,7 @@ const RATScreen: React.FC = () => {
         }
     }
 
-    if (timeUp) {
+    if (timeUp && !dataSent) {
         return (
             <View style={styles.container}>
                 <Text style={styles.title}>
@@ -120,9 +120,9 @@ const RATScreen: React.FC = () => {
         )
     }
 
-    if (timeUp && dataSent) {
+    if (dataSent) {
         return (
-            <View>
+            <View style={styles.container}>
                 <Text style={styles.title}>
                     {language === 'ja' ? "回答が送信されました！" : "Your answer has been submitted!"}
                 </Text>
