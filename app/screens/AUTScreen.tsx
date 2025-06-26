@@ -2,16 +2,16 @@ import { useCheckContext } from "@/contexts/CheckContext";
 import { useLanguage } from '@/contexts/LanguageContext';
 import { useRadioContext } from "@/contexts/RadioContext";
 import { auth, db } from '@/lib/firebase';
-import { useRouter } from 'expo-router';
 import { arrayUnion, doc, setDoc, updateDoc } from 'firebase/firestore';
 import React, { useEffect, useState } from 'react';
-import { Alert, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { Alert, Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { TextInput } from 'react-native-paper';
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Question } from "@/types/types";
 import Timer from '../components/Timer';
 import { tasks } from '../constants/tasks';
 import { getUnusedQuestion } from '../lib/getUnusedQuestion';
+import pic from '../assets/wclip-01.png'
 
 const AUTScreen: React.FC = () => {
     const [inputText, setInputText] = useState<string>("");
@@ -154,6 +154,11 @@ const AUTScreen: React.FC = () => {
                 </SafeAreaView>
             ) : (
                 <SafeAreaView style={styles.container}>
+                    {unusedQuestion?.id === 'a1' &&
+                        <View>
+                            <Image source={pic} style={styles.image} />
+                        </View>
+                    }
                     <View>
                         <Text style={styles.title}>
                             {autTask && (
@@ -254,5 +259,10 @@ const styles = StyleSheet.create({
         backgroundColor: "blue",
         position: "absolute",
         left: 8,
+    },
+    image: {
+        right: 100,
+        width: 70,
+        height: 70,
     },
 });
