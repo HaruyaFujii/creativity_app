@@ -4,7 +4,7 @@ import { useRadioContext } from "@/contexts/RadioContext";
 import { auth, db } from '@/lib/firebase';
 import { arrayUnion, doc, setDoc, updateDoc } from 'firebase/firestore';
 import React, { useEffect, useState } from 'react';
-import { Alert, Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { Alert, Image, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { TextInput } from 'react-native-paper';
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Question } from "@/types/types";
@@ -127,7 +127,7 @@ const AUTScreen: React.FC = () => {
                     <Text style={styles.title}>
                         {language === 'ja' ? "時間切れです!\nあなたの解答の中で最も良い2つの解答を選んでください。" : "Time's up!\nPlease select the two best answers from your responses."}
                     </Text>
-                    <View style={styles.buttonContainer}>
+                    <ScrollView contentContainerStyle={styles.buttonContainer}>
                         {inputTextList.map((answer, index) => (
                             <TouchableOpacity
                                 key={index}
@@ -141,7 +141,7 @@ const AUTScreen: React.FC = () => {
                                 <Text>{answer}</Text>
                             </TouchableOpacity>
                         ))}
-                    </View>
+                    </ScrollView>
                     <TouchableOpacity
                         style={styles.answerButton}
                         onPress={handleAnswerSubmit}
