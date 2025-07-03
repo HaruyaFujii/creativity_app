@@ -23,6 +23,8 @@ const RATScreen: React.FC = () => {
     const [inputText, setInputText] = useState<string>("");
     const [inputTextList, setInputTextList] = useState<string[]>([]);
     const [count, setCount] = useState(0);
+    const [startTime, setStartTime] = useState<number>(Date.now());
+    const [answerTimes, setAnswerTimes] = useState<number[]>([]);
 
 
     const ratTask = tasks.find(task => task.id === 'ratTask')
@@ -40,11 +42,27 @@ const RATScreen: React.FC = () => {
         fetchUnused();
     }, [ratTask]);
 
+    useEffect(() => {
+        if (count < 5) {
+            setStartTime(Date.now());
+        }
+    }, [count]);
+
     const handleTimeUp = () => {
-        setTimeUp(true);
+        if (count < 4) { 
+            setAnswerTimes(prev => [...prev, Date.now() - startTime]);
+            setInputTextList(prevList => [...prevList, inputText || ""]);
+            setInputText("");
+            setCount(prev => prev + 1);
+            setStartTime(Date.now());
+        } else {
+            setTimeUp(true); // 最後の問題でタイムアップ
+        }
     }
 
     const handleSaveInputChange = () => {
+        const elapsed = Date.now() - startTime;
+        setAnswerTimes(prev => [...prev, elapsed]);
         setCount((prev) => prev + 1)
         setInputTextList(prevList => [...prevList, inputText]);
         setInputText(""); // 入力フィールドをリセット
@@ -65,6 +83,7 @@ const RATScreen: React.FC = () => {
         const answers = unusedQuestion.map((q, i) => ({
             question: q.text_ja || q.text_en,
             answer: inputTextList[i] ?? "",
+            time: answerTimes[i] != null ? Math.round(answerTimes[i] / 1000) : null // 秒
         }));
 
         const answerData = {
@@ -97,11 +116,12 @@ const RATScreen: React.FC = () => {
         } finally {
             setIsLoading(false);
             setDataSent(true);
-            setInputTextList([]); // 入力リストをリセット
+            setInputTextList([]);
+            setAnswerTimes([]);
         }
     }
 
-    if (timeUp && !dataSent) {
+    if (timeUp && !dataSent && count >= 5) {
         return (
             <View style={styles.container}>
                 <Text style={styles.title}>
@@ -147,7 +167,11 @@ const RATScreen: React.FC = () => {
                     </View>
                     <View>
                         {ratTask && (
-                            <Timer task={ratTask} onTimeUpdate={handleTimeUp} />
+                            <Timer
+                                key={count}
+                                task={ratTask}
+                                onTimeUpdate={handleTimeUp}
+                            />
                         )}
                     </View>
                     <View style={styles.inputArea}>

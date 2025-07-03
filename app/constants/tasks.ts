@@ -6,9 +6,10 @@ export const tasks: Tasks[] = [
         name: 'Alternative Uses Test(AUT)',
         description: 'A test to evaluate divergent thinking by asking participants to think of unusual uses for common objects.',
         questions: [
-            { id: 'a1', text_ja: '3分間でペーパークリップの非日常的な使用用途を複数考えなさい。', text_en: 'Think of unusual uses for a paperclip as you can think of in 3 minutes.', used: false },
-            { id: 'a2', text_ja: '3分間でレンガの非日常的な使用用途を複数考えなさい。', text_en: 'Think of unusual uses for a brick as you can think of in 3 minutes.', used: false },
-            { id: 'a3', text_ja: '3分間で靴の非日常的な使用用途を複数考えなさい。', text_en: 'Think of unusual uses for shoes as you can think of in 3 minutes.', used: false },
+            { id: 'a1', text_ja: '3分間でペーパークリップの非日常的な(オリジナルで創造的な)使用用途をできるだけたくさん答えなさい。', text_en: 'Think of unusual uses for a paperclip as you can think of in 3 minutes.', used: false },
+            { id: 'a2', text_ja: '3分間でレンガの非日常的な(オリジナルで創造的な)使用用途をできるだけたくさん答えなさい。', text_en: 'Think of unusual uses for a brick as you can think of in 3 minutes.', used: false },
+            { id: 'a3', text_ja: '3分間で靴の非日常的な(オリジナルで創造的な)使用用途をできるだけたくさん答えなさい。', text_en: 'Think of unusual uses for shoes as you can think of in 3 minutes.', used: false },
+            { id: 'a4', text_ja: '3分間でナイフの非日常的な(オリジナルで創造的な)使用用途をできるだけたくさん答えなさい。', text_en: 'Think of unusual uses for knives as you can think of in 3 minutes.', used: false },
         ],
         timeLimit: 180 // 3 minutes
     },
@@ -38,7 +39,7 @@ export const tasks: Tasks[] = [
             { id: 'r19', text_ja: '「民」、「家」、「飼」をそれぞれつなぐ漢字を、ただ1つ見つけなさい。', text_en: 'Find a word that connects "light", "bulb", and "electricity".', used: false },
             { id: 'r20', text_ja: '「労」、「火」、「願」をそれぞれつなぐ漢字を、ただ1つ見つけなさい。', text_en: 'Find a word that connects "light", "bulb", and "electricity".', used: false },
         ],
-        timeLimit: 300 // 1 minutes per 1 problem
+        timeLimit: 60 // 1 minutes per 1 problem
     },
     {
         id: 'insightTask',

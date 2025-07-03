@@ -15,7 +15,6 @@ import { getUnusedQuestion } from '../lib/getUnusedQuestion';
 
 const InsightScreen: React.FC = () => {
     const [inputText, setInputText] = useState<string>("");
-    const [inputTextList, setInputTextList] = useState<string[]>([]);
     const [timeUp, setTimeUp] = useState<boolean>(false);
     const [unusedQuestion, setUnusedQuestion] = useState<Question>();
     const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -24,6 +23,8 @@ const InsightScreen: React.FC = () => {
     const { sleepAnswer } = useRadioContext();
     const { language } = useLanguage();
     const [isAnswered, setIsAnswered] = useState<boolean>(false);
+    const [startTime, setStartTime] = useState<number>(Date.now());
+    const [answerTime, setAnswerTime] = useState<number>();
 
     const insightTask = tasks.find(task => task.id === 'insightTask')
     if (!insightTask) {
@@ -35,6 +36,7 @@ const InsightScreen: React.FC = () => {
             if (insightTask) {
                 const uq = await getUnusedQuestion(insightTask.id);
                 setUnusedQuestion(uq!);
+                setStartTime(Date.now());
             }
         };
         fetchUnused();
@@ -42,6 +44,13 @@ const InsightScreen: React.FC = () => {
 
     const handleTimeUp = () => {
         setTimeUp(true);
+    }
+
+    const handleSaveText = () => {
+        const elapsed = Date.now() - startTime; 
+        const elapsedSec = Math.round(elapsed / 1000);
+        setAnswerTime(elapsedSec);
+        setIsAnswered(true);
     }
 
     const handleAnswerSubmit = async () => {
@@ -65,6 +74,7 @@ const InsightScreen: React.FC = () => {
             insightTask: {
                 question: unusedQuestion.text_ja || unusedQuestion.text_en,
                 Answers: inputText,
+                time: answerTime,
                 timestamp: Date.now()
             },
         }
@@ -159,7 +169,7 @@ const InsightScreen: React.FC = () => {
                     <View>
                         <TouchableOpacity
                             style={styles.answerButton}
-                            onPress={() => setIsAnswered(true)}
+                            onPress={() => handleSaveText()}
                             disabled={timeUp || inputText.trim() === ""}
                         >
                             <Text>
