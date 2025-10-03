@@ -50,6 +50,6 @@ export const tasks: Tasks[] = [
             { id: 'i2', text_ja: '「布が破れたので干し草の山は重要だった」\nこの文はどのような状況を指すでしょうか。', text_en: '"The haystack was important because the cloth ripped"\n What situation is indicated from this sentence?', used: false },
             { id: 'i3', text_ja: '人が死んだのに犯人は正当化されました\nなぜでしょうか。', text_en: 'Why was the perpetrator justified even though someone died?', used: false },
         ],
-        timeLimit: 180 // 
+        timeLimit: 300 // 考えるための十分な時間を与える
     }
 ]
