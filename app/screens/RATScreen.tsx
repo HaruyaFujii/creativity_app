@@ -121,7 +121,7 @@ const RATScreen: React.FC = () => {
         }
     }
 
-    if (timeUp && !dataSent && count >= 5) {
+    if (timeUp && !dataSent) {
         return (
             <View style={styles.container}>
                 <Text style={styles.title}>
