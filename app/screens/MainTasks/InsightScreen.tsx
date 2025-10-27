@@ -66,7 +66,7 @@ const InsightScreen: React.FC = () => {
             ) : isAnswered ? (
                 <View style={styles.container}>
                     <Text style={styles.title}>
-                        {language === 'ja' ? "回答を保存しました。次へ進んでください。" : "Answer saved. Please proceed."}
+                        {language === 'ja' ? "回答を保存しました。\n次へ進んでください。" : "Answer saved. Please proceed."}
                     </Text>
                     <TouchableOpacity
                         style={styles.answerButton}

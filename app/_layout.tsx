@@ -18,9 +18,10 @@ export default function RootLayout() {
                             <Stack.Screen name="screens/SelectScreen" options={{ headerShown: false }} />
                             <Stack.Screen name="screens/QuestionScreen" options={{ headerShown: false }} />
                             <Stack.Screen name="screens/CheckScreen" options={{ headerShown: false }} />
-                            <Stack.Screen name="screens/MainTasks/RATScreen" options={{ headerShown: false }} />
-                            <Stack.Screen name="screens/MainTasks/AUTScreen" options={{ headerShown: false }} />
-                            <Stack.Screen name="screens/MainTasks/InsightScreen" options={{ headerShown: false }} />
+                            <Stack.Screen name="screens/MainTasks/RATScreen" options={{ headerShown: false, gestureEnabled: false }} />
+                            <Stack.Screen name="screens/MainTasks/AUTScreen" options={{ headerShown: false, gestureEnabled: false }} />
+                            <Stack.Screen name="screens/MainTasks/InsightScreen" options={{ headerShown: false, gestureEnabled: false }} />
+                            <Stack.Screen name="screens/SendScreen" options={{ headerShown: false, gestureEnabled: false }} />
                         </Stack>
                     </LanguageProvider>
                 </RadioProvider>

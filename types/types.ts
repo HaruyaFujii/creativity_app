@@ -27,3 +27,25 @@ export interface Answer {
     answer: string; // 回答内容
     timestamp: number; // 回答した時間
 }
+
+export interface RatAnswer {
+  question: string[];
+  answer: string[];
+  timeTaken: number[];
+}
+export interface AutAnswer {
+  question: string;
+  allAnswers: string[];
+  top2: string[];
+  timeTaken: number;
+}
+export interface InsightAnswer {
+  question: string;
+  answer: string;
+  timeTaken: number;
+}
+export interface AllAnswers {
+  rat?: RatAnswer;
+  aut?: AutAnswer;
+  insight?: InsightAnswer;
+}

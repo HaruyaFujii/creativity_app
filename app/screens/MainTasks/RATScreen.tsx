@@ -1,5 +1,6 @@
 import { useLanguage } from '@/contexts/LanguageContext';
 import { useTaskFlow } from '@/contexts/TaskFlowContext';
+import { RatAnswer } from '@/types/types';
 import React, { useEffect, useState } from 'react';
 import { StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -9,12 +10,13 @@ const RATScreen: React.FC = () => {
     const { language } = useLanguage();
     const { currentTaskSet, setRatAnswer, completeCurrentTask } = useTaskFlow();
 
-    const [timeUp, setTimeUp] = useState<boolean>(false);
     const [inputText, setInputText] = useState<string>("");
     const [inputTextList, setInputTextList] = useState<string[]>([]);
     const [count, setCount] = useState(0);
     const [startTime, setStartTime] = useState<number>(0);
     const [timeTakenList, setTimeTakenList] = useState<number[]>([]);
+    const [isFinished, setIsFinished] = useState<boolean>(false);
+    const [finalAnswer, setFinalAnswer] = useState<RatAnswer | null>(null);
 
     // TaskFlowContextからRATタスクと問題を取得
     const ratTask = currentTaskSet?.tasks.find(t => t.id === 'ratTask');
@@ -39,7 +41,6 @@ const RATScreen: React.FC = () => {
         const newTimeTakenList = [...timeTakenList, timeTaken];
         setTimeTakenList(newTimeTakenList);
 
-        // 時間切れでも入力中のテキストは保存リストに追加
         const newList = [...inputTextList, inputText || ""];
         setInputTextList(newList);
         setInputText("");
@@ -47,8 +48,7 @@ const RATScreen: React.FC = () => {
         if (count < questions.length - 1) {
             setCount(prev => prev + 1);
         } else {
-            // 全ての問題が時間切れになったら完了
-            handleDone(newList, newTimeTakenList);
+            prepareAndShowConfirmation(newList, newTimeTakenList);
         }
     }
 
@@ -64,20 +64,25 @@ const RATScreen: React.FC = () => {
         if (count < questions.length - 1) {
             setCount(prev => prev + 1);
         } else {
-            // 全ての問題に回答したら完了
-            handleDone(newList, newTimeTakenList);
+            prepareAndShowConfirmation(newList, newTimeTakenList);
         }
     }
 
-    // 引数で最新の回答リストと時間リストを受け取るように変更
-    const handleDone = (finalAnswers: string[], finalTimeTaken: number[]) => {
-        const answerData = {
+    const prepareAndShowConfirmation = (finalAnswers: string[], finalTimeTaken: number[]) => {
+        const answerData: RatAnswer = {
             question: questions.map(q => language === 'ja' ? q.text_ja : q.text_en),
             answer: finalAnswers,
             timeTaken: finalTimeTaken,
         };
-        setRatAnswer(answerData);
-        completeCurrentTask();
+        setFinalAnswer(answerData);
+        setIsFinished(true);
+    };
+
+    const handleDone = () => {
+        if (finalAnswer) {
+            setRatAnswer(finalAnswer);
+            completeCurrentTask();
+        }
     };
 
     // 現在の問題
@@ -85,42 +90,58 @@ const RATScreen: React.FC = () => {
 
     return (
         <SafeAreaView style={styles.container}>
-            <View style={styles.container}>
-                <View>
+            {isFinished ? (
+                <View style={styles.container}>
                     <Text style={styles.title}>
-                        {language === 'ja'
-                            ? currentQuestion?.text_ja
-                            : currentQuestion?.text_en
-                        }
+                        {language === 'ja' ? "回答を保存しました。\n次へ進んでください。" : "Answer saved. Please proceed."}
                     </Text>
-                </View>
-                <View>
-                    <Timer
-                        key={count} // keyをcountにしてタイマーをリセット
-                        task={ratTask}
-                        onTimeUpdate={handleTimeUp}
-                    />
-                </View>
-                <View style={styles.inputArea}>
-                    <TextInput
-                        style={styles.input}
-                        placeholder={language === 'ja' ? "単語を入力" : "input the word"}
-                        onChangeText={setInputText}
-                        value={inputText}
-                    />
-                </View>
-                <View>
                     <TouchableOpacity
                         style={styles.button}
-                        onPress={handleSaveInputChange}
-                        disabled={inputText.trim() === ""}
+                        onPress={handleDone}
                     >
                         <Text>
-                            {language === 'ja' ? "解答" : "Answer"}
+                            {language === 'ja' ? "完了" : "Done"}
                         </Text>
                     </TouchableOpacity>
                 </View>
-            </View>
+            ) : (
+                <View style={styles.container}>
+                    <View>
+                        <Text style={styles.title}>
+                            {language === 'ja'
+                                ? currentQuestion?.text_ja
+                                : currentQuestion?.text_en
+                            }
+                        </Text>
+                    </View>
+                    <View>
+                        <Timer
+                            key={count} // keyをcountにしてタイマーをリセット
+                            task={ratTask}
+                            onTimeUpdate={handleTimeUp}
+                        />
+                    </View>
+                    <View style={styles.inputArea}>
+                        <TextInput
+                            style={styles.input}
+                            placeholder={language === 'ja' ? "単語を入力" : "input the word"}
+                            onChangeText={setInputText}
+                            value={inputText}
+                        />
+                    </View>
+                    <View>
+                        <TouchableOpacity
+                            style={styles.button}
+                            onPress={handleSaveInputChange}
+                            disabled={inputText.trim() === ""}
+                        >
+                            <Text>
+                                {language === 'ja' ? "解答" : "Answer"}
+                            </Text>
+                        </TouchableOpacity>
+                    </View>
+                </View>
+            )}
         </SafeAreaView>
     )
 }

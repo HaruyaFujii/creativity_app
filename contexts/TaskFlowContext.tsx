@@ -1,33 +1,9 @@
 import React, { createContext, useState, useContext, ReactNode } from 'react';
 import { useRouter } from 'expo-router';
 import { getNextTaskSet } from '@/app/screens/MainTasks/taskManager';
-import { Tasks } from '@/types/types';
+import { Tasks, RatAnswer, AutAnswer, InsightAnswer, AllAnswers } from '@/types/types';
 import { auth } from '@/lib/firebase';
 import { fetchUserCount } from '@/app/lib/fetchUserCount';
-
-// --- 回答データの型定義 ---
-// (将来的には types/types.ts に移すのが望ましいです)
-export interface RatAnswer {
-  question: string[];
-  answer: string[];
-  timeTaken: number[];
-}
-export interface AutAnswer {
-  question: string;
-  allAnswers: string[];
-  top2: string[];
-  timeTaken: number;
-}
-export interface InsightAnswer {
-  question: string;
-  answer: string;
-  timeTaken: number;
-}
-export interface AllAnswers {
-  rat?: RatAnswer;
-  aut?: AutAnswer;
-  insight?: InsightAnswer;
-}
 
 // --- Contextが提供する値の型定義 ---
 interface TaskFlowContextType {

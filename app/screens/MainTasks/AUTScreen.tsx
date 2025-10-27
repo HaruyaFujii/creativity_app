@@ -1,7 +1,8 @@
 import { useLanguage } from '@/contexts/LanguageContext';
 import { useTaskFlow } from '@/contexts/TaskFlowContext';
+import { AutAnswer } from '@/types/types';
 import React, { useEffect, useState } from 'react';
-import { Alert, Image, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { Image, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { TextInput } from 'react-native-paper';
 import { SafeAreaView } from "react-native-safe-area-context";
 import Timer from '../../components/Timer';
@@ -16,6 +17,8 @@ const AUTScreen: React.FC = () => {
     const [timeUp, setTimeUp] = useState<boolean>(false);
     const [selectedAnswers, setSelectedAnswers] = useState<string[]>([]);
     const [startTime, setStartTime] = useState<number>(0);
+    const [isFinished, setIsFinished] = useState<boolean>(false);
+    const [finalAnswer, setFinalAnswer] = useState<AutAnswer | null>(null);
 
     // TaskFlowContextからAUTタスクと問題を取得
     const autTask = currentTaskSet?.tasks.find(t => t.id === 'autTask');
@@ -26,7 +29,6 @@ const AUTScreen: React.FC = () => {
     }, []);
 
     if (!autTask || !question) {
-        // この画面に来る時点でタスクはセットされているはずなので、基本的にはエラーは発生しない想定
         return <Text>Task not found for AUTScreen</Text>;
     }
 
@@ -47,22 +49,43 @@ const AUTScreen: React.FC = () => {
         }
     };
 
-    const handleDone = () => {
+    const prepareAndShowConfirmation = () => {
         const endTime = Date.now();
         const timeTaken = Math.round((endTime - startTime) / 1000);
-        const answerData = {
+        const answerData: AutAnswer = {
             question: language === 'ja' ? question.text_ja : question.text_en,
             allAnswers: inputTextList,
             top2: selectedAnswers,
             timeTaken: timeTaken,
         };
-        setAutAnswer(answerData);
-        completeCurrentTask();
+        setFinalAnswer(answerData);
+        setIsFinished(true);
+    };
+
+    const handleDone = () => {
+        if (finalAnswer) {
+            setAutAnswer(finalAnswer);
+            completeCurrentTask();
+        }
     };
 
     return (
         <SafeAreaView style={styles.container}>
-            {timeUp ? (
+            {isFinished ? (
+                <View style={styles.container}>
+                    <Text style={styles.title}>
+                        {language === 'ja' ? "回答を保存しました。\n次へ進んでください。" : "Answer saved. Please proceed."}
+                    </Text>
+                    <TouchableOpacity
+                        style={styles.answerButton}
+                        onPress={handleDone}
+                    >
+                        <Text>
+                            {language === 'ja' ? "完了" : "Done"}
+                        </Text>
+                    </TouchableOpacity>
+                </View>
+            ) : timeUp ? (
                 <SafeAreaView style={styles.container}>
                     <Text style={styles.title}>
                         {language === 'ja' ? "時間切れです!\nあなたの解答の中で最も良い2つの解答を選んでください。" : "Time's up!\nPlease select the two best answers from your responses."}
@@ -71,7 +94,7 @@ const AUTScreen: React.FC = () => {
                         {inputTextList.map((answer, index) => (
                             <TouchableOpacity
                                 key={index}
-                                style={[
+                                style={[ 
                                     styles.button,
                                     selectedAnswers.includes(answer) && styles.buttonSelected,
                                 ]}
@@ -84,7 +107,7 @@ const AUTScreen: React.FC = () => {
                     </ScrollView>
                     <TouchableOpacity
                         style={styles.answerButton}
-                        onPress={handleDone}
+                        onPress={prepareAndShowConfirmation}
                     >
                         <Text>
                             {language === 'ja' ? "完了" : "Done"}
