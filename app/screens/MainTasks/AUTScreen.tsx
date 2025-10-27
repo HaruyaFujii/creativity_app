@@ -5,7 +5,7 @@ import { Alert, Image, ScrollView, StyleSheet, Text, TouchableOpacity, View } fr
 import { TextInput } from 'react-native-paper';
 import { SafeAreaView } from "react-native-safe-area-context";
 import Timer from '../../components/Timer';
-import pic from '../assets/wclip-01.png'
+import pic from '@/app/assets/wclip-01.png'
 
 const AUTScreen: React.FC = () => {
     const { language } = useLanguage();
