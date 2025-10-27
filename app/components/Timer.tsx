@@ -2,10 +2,10 @@ import { useLanguage } from '@/contexts/LanguageContext';
 import React, { useEffect, useState } from 'react';
 import { StyleSheet, Text } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { Tasks } from '../../types/types';
+import { Task } from '../../types/types';
 
 interface TimerProps {
-    task: Tasks;
+    task: Task;
     onTimeUpdate: () => void;
 }
 

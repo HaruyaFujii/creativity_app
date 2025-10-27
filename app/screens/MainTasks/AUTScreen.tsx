@@ -1,50 +1,38 @@
-import { useCheckContext } from "@/contexts/CheckContext";
 import { useLanguage } from '@/contexts/LanguageContext';
-import { useRadioContext } from "@/contexts/RadioContext";
-import { auth, db } from '@/lib/firebase';
-import { arrayUnion, doc, setDoc, updateDoc } from 'firebase/firestore';
+import { useTaskFlow } from '@/contexts/TaskFlowContext';
 import React, { useEffect, useState } from 'react';
 import { Alert, Image, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { TextInput } from 'react-native-paper';
 import { SafeAreaView } from "react-native-safe-area-context";
-import { Question } from "@/types/types";
-import Timer from '../components/Timer';
-import { tasks } from '../constants/tasks';
-import { getUnusedQuestion } from '../lib/getUnusedQuestion';
+import Timer from '../../components/Timer';
 import pic from '../assets/wclip-01.png'
 
 const AUTScreen: React.FC = () => {
+    const { language } = useLanguage();
+    const { currentTaskSet, setAutAnswer, completeCurrentTask } = useTaskFlow();
+
     const [inputText, setInputText] = useState<string>("");
     const [inputTextList, setInputTextList] = useState<string[]>([]);
     const [timeUp, setTimeUp] = useState<boolean>(false);
-    const [unusedQuestion, setUnusedQuestion] = useState<Question>();
-    const [isLoading, setIsLoading] = useState<boolean>(false);
-    const [dataSent, setDataSent] = useState<boolean>(false);
-    const { isCheckedBool } = useCheckContext();
-    const { sleepAnswer } = useRadioContext();
-    const { language } = useLanguage();
     const [selectedAnswers, setSelectedAnswers] = useState<string[]>([]);
+    const [startTime, setStartTime] = useState<number>(0);
 
-    const autTask = tasks.find(task => task.id === 'autTask')
-    if (!autTask) {
-        Alert.alert("Task not found");
-    }
+    // TaskFlowContextからAUTタスクと問題を取得
+    const autTask = currentTaskSet?.tasks.find(t => t.id === 'autTask');
+    const question = autTask?.questions[0]; // AUTは問題が1つと想定
 
     useEffect(() => {
-        const fetchUnused = async () => {
-            if (autTask) {
-                const uq = await getUnusedQuestion(autTask.id);
-                setUnusedQuestion(uq!);
-            }
-        };
-        fetchUnused();
-    }, [autTask]);
+        setStartTime(Date.now());
+    }, []);
+
+    if (!autTask || !question) {
+        // この画面に来る時点でタスクはセットされているはずなので、基本的にはエラーは発生しない想定
+        return <Text>Task not found for AUTScreen</Text>;
+    }
 
     const handleSaveInputChange = () => {
         setInputTextList(prevList => [...prevList, inputText]);
         setInputText(""); // 入力フィールドをリセット
-        console.log("Input saved:", inputText);
-        console.log("Input list:", inputTextList);
     }
 
     const handleTimeUp = () => {
@@ -53,76 +41,28 @@ const AUTScreen: React.FC = () => {
 
     const handleSelect = (answer: string) => {
         if (selectedAnswers.includes(answer)) {
-            // すでに選択済みなら解除
             setSelectedAnswers(selectedAnswers.filter(a => a !== answer));
         } else if (selectedAnswers.length < 2) {
-            // 2つ未満なら追加
             setSelectedAnswers([...selectedAnswers, answer]);
         }
-        // 2つ選択済みなら何もしない
     };
 
-    const handleAnswerSubmit = async () => {
-        setIsLoading(true);
-        const currentUserEmail = auth.currentUser?.email || "unknown";
-
-        if (!currentUserEmail || !autTask || !unusedQuestion) {
-            Alert.alert("Error", "タスクまたはユーザが存在しません！");
-            return;
-        }
-
-        const questionId = unusedQuestion.id;
-
+    const handleDone = () => {
+        const endTime = Date.now();
+        const timeTaken = Math.round((endTime - startTime) / 1000);
         const answerData = {
-            checkBox: {
-                compliance: isCheckedBool ? "Rule followed" : "Rule broken",
-            },
-            sleepquestion: {
-                response: sleepAnswer,
-            },
-            aut: {
-                question: unusedQuestion.text_ja || unusedQuestion.text_en,
-                Answers: inputTextList,
-                timestamp: Date.now()
-            },
-            Top2Answers: selectedAnswers
-        }
-
-        const dataRef = doc(db, "users", currentUserEmail);
-        const usedQuestionRef = doc(db, "users", currentUserEmail, "usedQuestions", questionId);
-
-
-        try {
-            await setDoc(dataRef, {}, { merge: true }) // ドキュメント作成
-            await updateDoc(dataRef, {
-                autResult: arrayUnion(answerData)
-            })
-
-            await setDoc(usedQuestionRef, { used: true }, { merge: true })
-
-            // router.push("/screens/Top2Screen");
-
-        } catch (error) {
-            console.error("保存エラー:", error);
-        } finally {
-            setIsLoading(false);
-            setDataSent(true);
-            setInputTextList([]); // 入力リストをリセット
-        }
+            question: language === 'ja' ? question.text_ja : question.text_en,
+            allAnswers: inputTextList,
+            top2: selectedAnswers,
+            timeTaken: timeTaken,
+        };
+        setAutAnswer(answerData);
+        completeCurrentTask();
     };
 
     return (
         <SafeAreaView style={styles.container}>
-            {dataSent ? (
-                <SafeAreaView>
-                    <Text style={styles.title}>
-                        {language === 'ja' ? "回答が送信されました！" : "Your answer has been submitted!"}
-                    </Text>
-                    <Text style={styles.title}>
-                        {language === 'ja' ? "アプリを終了してください" : "Exit the app"}
-                    </Text>
-                </SafeAreaView>
-            ) : timeUp ? (
+            {timeUp ? (
                 <SafeAreaView style={styles.container}>
                     <Text style={styles.title}>
                         {language === 'ja' ? "時間切れです!\nあなたの解答の中で最も良い2つの解答を選んでください。" : "Time's up!\nPlease select the two best answers from your responses."}
@@ -144,34 +84,27 @@ const AUTScreen: React.FC = () => {
                     </ScrollView>
                     <TouchableOpacity
                         style={styles.answerButton}
-                        onPress={handleAnswerSubmit}
-                        disabled={isLoading}
+                        onPress={handleDone}
                     >
                         <Text>
-                            {language === 'ja' ? "送信" : "Send"}
+                            {language === 'ja' ? "完了" : "Done"}
                         </Text>
                     </TouchableOpacity>
                 </SafeAreaView>
             ) : (
                 <SafeAreaView style={styles.container}>
-                    {unusedQuestion?.id === 'a1' &&
+                    {question.id === 'a1' &&
                         <View>
                             <Image source={pic} style={styles.image} />
                         </View>
                     }
                     <View>
                         <Text style={styles.title}>
-                            {autTask && (
-                                language === 'ja'
-                                    ? unusedQuestion?.text_ja
-                                    : unusedQuestion?.text_en
-                            )}
+                            {language === 'ja' ? question.text_ja : question.text_en}
                         </Text>
                     </View>
                     <View>
-                        {autTask && (
-                            <Timer task={autTask} onTimeUpdate={handleTimeUp} />
-                        )}
+                        <Timer task={autTask} onTimeUpdate={handleTimeUp} />
                     </View>
                     <View style={styles.inputArea}>
                         <TextInput

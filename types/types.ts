@@ -7,12 +7,18 @@ export interface Question {
     used: boolean; // 使用したことあるかどうか
 }
 
-export interface Tasks {
+export interface Task {
     id: string; // タスクごとのid
     name: string; // タスク名
     description: string; // タスクの説明
     questions: Question[]; // タスクに関連する問題
     timeLimit: number; // タスクの時間制限
+}
+
+export interface Tasks{
+    count: number; // 何回目か
+    rotate: string[];
+    tasks: Task[];
 }
 
 
