@@ -16,6 +16,8 @@ const SendScreen: React.FC = () => {
     const { sleepAnswer } = useRadioContext();
     const { answers, currentTaskSet } = useTaskFlow();
     const [currentUser, setCurrentUser] = useState<User | null>(null);
+    const [isLoading, setIsLoading] = useState<boolean>(false);
+    const [dataSent, setDataSent] = useState<boolean>(false);
     const router = useRouter();
 
     useEffect(() => {
@@ -31,6 +33,7 @@ const SendScreen: React.FC = () => {
     }, [router]);
 
     const handleSend = async () => {
+        setIsLoading(true);
         if (!currentUser?.email) {
             Alert.alert(language === 'ja' ? 'エラー' : 'Error', language === 'ja' ? 'ユーザー情報が見つかりません。' : 'User information not found.');
             return;
@@ -70,23 +73,34 @@ const SendScreen: React.FC = () => {
                 const countRef = doc(db, "users", currentUserEmail);
                 await setDoc(countRef, { count: currentTaskSet.count }, { merge: true });
             }
-
-            Alert.alert(language === 'ja' ? '成功' : 'Success', language === 'ja' ? '解答が正常に送信されました。' : 'Your answers have been submitted successfully.');
-            // Optionally, navigate to another screen after submission
-            router.push('/'); // Navigate to home or a thank you screen
-
         } catch (error) {
             console.error("Error sending data to Firebase: ", error);
             Alert.alert(language === 'ja' ? 'エラー' : 'Error', language === 'ja' ? 'データの送信中にエラーが発生しました。' : 'An error occurred while sending your data.');
+        } finally {
+            Alert.alert(language === 'ja' ? '成功' : 'Success', language === 'ja' ? '解答が正常に送信されました。' : 'Your answers have been submitted successfully.');
+            setIsLoading(false);
+            setDataSent(true);
         }
     };
 
     return (
         <SafeAreaView style={styles.container}>
-            <Text style={styles.title}>{language === 'ja' ? 'お疲れ様でした！' : 'Well done!'}</Text>
-            <TouchableOpacity style={styles.button} onPress={handleSend}>
-                <Text style={styles.buttonText}>{language === 'ja' ? '解答を送信' : 'Send Answers'}</Text>
-            </TouchableOpacity>
+            {dataSent ? (
+                <View>
+                    <Text style={styles.title}>{language === 'ja' ? '解答が送信されました。\nアプリを終了してください。' : 'The data was sent. \nPlease exit the app.'}</Text>
+                </View>
+            ) : (
+                <View>
+                    <Text style={styles.title}>{language === 'ja' ? 'お疲れ様でした！' : 'Well done!'}</Text>
+                    <TouchableOpacity
+                        style={styles.button}
+                        onPress={() => handleSend()}
+                        disabled={isLoading}
+                    >
+                        <Text style={styles.buttonText}>{language === 'ja' ? '解答を送信' : 'Send Answers'}</Text>
+                    </TouchableOpacity>
+                </View>
+            )}
         </SafeAreaView>
     );
 };
