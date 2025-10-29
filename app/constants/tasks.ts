@@ -23,7 +23,7 @@ export const tasks: Tasks[] = [
                 name: 'Remote Associates Test(RAT)',
                 description: 'A test to evaluate convergent thinking by asking participants to find a common word that connects three given words.',
                 questions: [
-                    { id: 'r1', text_ja: '「専」、「入」、「祈」をそれぞれつなぐ漢字を、ただ1つ見つけなさい。', text_en: 'Find a word that connects "blue", "sky", and "ocean".', used: false },
+                    { id: 'r1', text_ja: '「打」、「欠」、「始」をそれぞれつなぐ漢字を、ただ1つ見つけなさい。', text_en: 'Find a word that connects "blue", "sky", and "ocean".', used: false },
                     { id: 'r2', text_ja: '「短」、「延」、「使」をそれぞれつなぐ漢字を、ただ1つ見つけなさい。。', text_en: 'Find a word that connects "doctor", "nurse", and "hospital".', used: false },
                     { id: 'r3', text_ja: '「伝」、「到」、「舶」をそれぞれつなぐ漢字を、ただ1つ見つけなさい。', text_en: 'Find a word that connects "light", "bulb", and "electricity".', used: false },
                     { id: 'r4', text_ja: '「独」、「献」、「脂」をそれぞれつなぐ漢字を、ただ1つ見つけなさい。', text_en: 'Find a word that connects "light", "bulb", and "electricity".', used: false },
@@ -64,10 +64,10 @@ export const tasks: Tasks[] = [
                 name: 'Remote Associates Test(RAT)',
                 description: 'A test to evaluate convergent thinking by asking participants to find a common word that connects three given words.',
                 questions: [
-                    { id: 'r6', text_ja: '「製」、「構」、「指」をそれぞれつなぐ漢字を、ただ1つ見つけなさい。', text_en: 'Find a word that connects "light", "bulb", and "electricity".', used: false },
+                    { id: 'r6', text_ja: '「作」、「実」、「奮」をそれぞれつなぐ漢字を、ただ1つ見つけなさい。', text_en: 'Find a word that connects "light", "bulb", and "electricity".', used: false },
                     { id: 'r7', text_ja: '「素」、「個」、「習」をそれぞれつなぐ漢字を、ただ1つ見つけなさい。', text_en: 'Find a word that connects "light", "bulb", and "electricity".', used: false },
-                    { id: 'r8', text_ja: '「発」、「旅」、「株」をそれぞれつなぐ漢字を、ただ1つ見つけなさい。', text_en: 'Find a word that connects "light", "bulb", and "electricity".', used: false },
-                    { id: 'r9', text_ja: '「話」、「技」、「療」をそれぞれつなぐ漢字を、ただ1つ見つけなさい。', text_en: 'Find a word that connects "light", "bulb", and "electricity".', used: false },
+                    { id: 'r8', text_ja: '「製」、「構」、「指」をそれぞれつなぐ漢字を、ただ1つ見つけなさい。', text_en: 'Find a word that connects "light", "bulb", and "electricity".', used: false },
+                    { id: 'r9', text_ja: '「特」、「変」、「驚」をそれぞれつなぐ漢字を、ただ1つ見つけなさい。', text_en: 'Find a word that connects "light", "bulb", and "electricity".', used: false },
                     { id: 'r10', text_ja: '「輸」、「混」、「止」をそれぞれつなぐ漢字を、ただ1つ見つけなさい。', text_en: 'Find a word that connects "light", "bulb", and "electricity".', used: false },
                 ],
                 timeLimit: 60 // 1 minutes   
@@ -105,10 +105,10 @@ export const tasks: Tasks[] = [
                 name: 'Remote Associates Test(RAT)',
                 description: 'A test to evaluate convergent thinking by asking participants to find a common word that connects three given words.',
                 questions: [
-                    { id: 'r11', text_ja: '「達」、「芸」、「使」をそれぞれつなぐ漢字を、ただ1つ見つけなさい。', text_en: 'Find a word that connects "light", "bulb", and "electricity".', used: false },
+                    { id: 'r11', text_ja: '「果」、「食」、「皮」をそれぞれつなぐ漢字を、ただ1つ見つけなさい。', text_en: 'Find a word that connects "light", "bulb", and "electricity".', used: false },
                     { id: 'r12', text_ja: '「電」、「暴」、「鼓」をそれぞれつなぐ漢字を、ただ1つ見つけなさい。', text_en: 'Find a word that connects "light", "bulb", and "electricity".', used: false },
-                    { id: 'r13', text_ja: '「果」、「食」、「皮」をそれぞれつなぐ漢字を、ただ1つ見つけなさい。', text_en: 'Find a word that connects "light", "bulb", and "electricity".', used: false },
-                    { id: 'r14', text_ja: '「適」、「見」、「談」をそれぞれつなぐ漢字を、ただ1つ見つけなさい。', text_en: 'Find a word that connects "light", "bulb", and "electricity".', used: false },
+                    { id: 'r13', text_ja: '「達」、「芸」、「使」をそれぞれつなぐ漢字を、ただ1つ見つけなさい。', text_en: 'Find a word that connects "light", "bulb", and "electricity".', used: false },
+                    { id: 'r14', text_ja: '「在」、「住」、「汚」をそれぞれつなぐ漢字を、ただ1つ見つけなさい。', text_en: 'Find a word that connects "light", "bulb", and "electricity".', used: false },
                     { id: 'r15', text_ja: '「分」、「種」、「障」をそれぞれつなぐ漢字を、ただ1つ見つけなさい。', text_en: 'Find a word that connects "light", "bulb", and "electricity".', used: false },
                 ],
                 timeLimit: 60 // 1 minutes   
